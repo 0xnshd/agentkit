@@ -1,0 +1,29 @@
+# Build outputs
+bin/
+build/
+dist/
+*.out
+*.test
+
+# Go caches
+.cache/
+coverage.out
+
+# Generated files
+protocol/generated/
+
+# Local tooling
+.idea/
+.vscode/
+.zed/
+.DS_Store
+
+# Logs / temp
+*.log
+tmp/
+temp/
+
+# Environment overrides
+.env
+.env.*
+!.env.example
