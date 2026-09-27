@@ -1,33 +1,35 @@
 package websearchtool
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
 	"time"
-
-	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 var DEGOOG_URL = "http://localhost:4444/api/search"
 
-func Degoog(ctx context.Context, req *mcp.CallToolRequest, in SearchInput) (*mcp.CallToolResult, SearchOutput, error) {
+func Degoog(in SearchInput) (SearchOutput, error) {
 	res, err := querySearchApi(in.Query)
 	if err != nil {
-		return nil, SearchOutput{}, err
+		return SearchOutput{}, err
 	}
-	defer res.Body.Close()
+
+	defer func() {
+		_ = res.Body.Close()
+	}()
 
 	var out SearchOutput
 
-	err = json.NewDecoder(res.Body).Decode(&out)
+	if err := json.NewDecoder(res.Body).Decode(&out); err != nil {
+		return SearchOutput{}, err
+	}
 
 	if in.Top <= len(out.Results) {
 		out.Results = out.Results[:in.Top]
 	}
 
-	return nil, out, nil
+	return out, nil
 }
 
 // query degoog search api

@@ -1,7 +1,6 @@
 package websearchtool_test
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -15,7 +14,7 @@ func Test_Degoog_Success(t *testing.T) {
 	fakeserver := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"results": [{"url": "url", "score": 1}, {"url": "url", "score": 1}, {"url": "url", "score": 1}]}`))
+		_, _ = w.Write([]byte(`{"results": [{"url": "url", "score": 1}, {"url": "url", "score": 1}, {"url": "url", "score": 1}]}`))
 	}))
 
 	temp := websearchtool.DEGOOG_URL
@@ -59,13 +58,13 @@ func Test_Degoog_Success(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, out, err := websearchtool.Degoog(context.Background(), nil, tt.input)
+			out, err := websearchtool.Degoog(tt.input)
 			testingx.CheckWErr(t, len(out.Results), tt.want, err, nil)
 		})
 	}
 }
 
 func Test_Degoog_int(t *testing.T) {
-	_, out, err := websearchtool.Degoog(context.Background(), nil, websearchtool.SearchInput{Query: "k8s", Top: 2})
+	out, err := websearchtool.Degoog(websearchtool.SearchInput{Query: "k8s", Top: 2})
 	fmt.Println(out, err)
 }
